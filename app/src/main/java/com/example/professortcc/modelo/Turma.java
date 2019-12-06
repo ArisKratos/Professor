@@ -6,6 +6,7 @@ public class Turma {
     private String id;
     private String ano;
     private String semestre;
+    private String urlGrade;
     private String curso;
 
 
@@ -38,6 +39,14 @@ public class Turma {
 
     public void setCurso(String curso) {
         this.curso = curso;
+    }
+
+    public String getUrlGrade() {
+        return urlGrade;
+    }
+
+    public void setUrlGrade(String urlGrade) {
+        this.urlGrade = urlGrade;
     }
 
 

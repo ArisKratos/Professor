@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.professortcc.R;
@@ -45,6 +46,7 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Curso> cursos;
     private List<Turma> turmas;
     private Spinner spnCursos;
+    private TextView aliaslinkBaixarGrade;
     private Spinner spnTurmas;
     private String nomeProf;
     private CheckBox checkMudancaDeHorario;
@@ -92,6 +94,8 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 });
+
+
     }
 
     @Override
@@ -109,6 +113,7 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
         enviarMensagem = findViewById(R.id.buttonEnviarMensagem);
         textMensagem = findViewById(R.id.editMensagem);
         spnTurmas = findViewById(R.id.spinnerTurma);
+        aliaslinkBaixarGrade = findViewById(R.id.linkBaixarGrade);
 
 
         spnCursos.setOnItemSelectedListener(this);
@@ -137,8 +142,19 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
         });
 
+    aliaslinkBaixarGrade.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+
+
+
+
+       }
+
+    });
 
     }
+
 
     private  void carregarSpinnerTurma(){
         Curso curso = (Curso) spnCursos.getSelectedItem();
