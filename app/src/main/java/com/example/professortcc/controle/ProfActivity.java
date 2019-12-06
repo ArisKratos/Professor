@@ -201,21 +201,25 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
             String idProfessor = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+            SimpleDateFormat dateFormat_hora = new SimpleDateFormat("HH:mm");
 
             SimpleDateFormat formataData = new SimpleDateFormat("dd-MM-yyyy");
+
             Date data = new Date();
-            String dataFormatada = formataData.format(data);
 
-            long timeStamp = System.currentTimeMillis();
+            final String dataFormatada = formataData.format(data);
+            final String hora_atual = dateFormat_hora.format(data);
 
-
-
-
+            final long timeStamp = System.currentTimeMillis();
 
 
 
 
-            Mensagem mensagem = new Mensagem(idMsg, idProfessor, textMsg, "Prof." + nomeProf, txtTurmaAno, txtTurmaSemestre, dataFormatada, timeStamp, false, mudancaHorario);
+
+
+
+            Mensagem mensagem = new Mensagem(idMsg, idProfessor, textMsg, "Prof." + nomeProf, txtTurmaAno, txtTurmaSemestre,
+                    dataFormatada, timeStamp, false, mudancaHorario, hora_atual);
 
             if (!mensagem.getMensagem().isEmpty()) {
                 FirebaseFirestore.getInstance().collection("cursos").document(curso.getId()).collection("turmas").document(turma.getId())

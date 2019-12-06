@@ -1,11 +1,15 @@
 package com.example.professortcc.controle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -13,6 +17,8 @@ import android.widget.Toast;
 import com.example.professortcc.R;
 import com.example.professortcc.modelo.Mensagem;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +36,8 @@ public class ListarMsgActivity extends AppCompatActivity {
     private List<Mensagem> mensagens;
     private String id;
 
+    private AlertDialog alerta;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +51,7 @@ public class ListarMsgActivity extends AppCompatActivity {
         aliasListMsg = findViewById(R.id.editListMsg);
         mensagens = new ArrayList<>();
 
+
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -50,7 +59,45 @@ public class ListarMsgActivity extends AppCompatActivity {
 
 
 
+       aliasListMsg.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                                           final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Alerta!");
+                builder.setMessage("Deseja mesmo excluir essa mensangem?");
+                builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                        String idProf = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        FirebaseFirestore.getInstance().collection("professores").document(idProf).collection("mensagens")
+                    .document(mensagens.get(position).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(ListarMsgActivity.this, "Mensagem excluida com sucesso!", Toast.LENGTH_LONG).show();
+                                carregarMsg();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(ListarMsgActivity.this, "Erro ao deletar mensagem", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+
+                builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Toast.makeText(getApplicationContext(), "Ação cancelada", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alerta = builder.create();
+                alerta.show();
+                return true;
+            }
+        });
     }
 
     public void carregarMsg(){
@@ -75,10 +122,11 @@ public class ListarMsgActivity extends AppCompatActivity {
                                 String semestre = document.getString("semestreMensagem");
                                 long time = document.getLong("timeMassage");
                                 String turmaAno = document.getString("turmaAnoMensagem");
+                                String hora = document.getString("hora_atual");
 
 
 
-                                Mensagem u = new Mensagem(id, idRemetente, mensagem, remetente, turmaAno, semestre, data, time, paraTodos, mudanca);
+                                Mensagem u = new Mensagem(id, idRemetente, mensagem, remetente, turmaAno, semestre, data, time, paraTodos, mudanca,hora);
 
 
                                 mensagens.add(u);
