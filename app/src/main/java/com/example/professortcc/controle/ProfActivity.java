@@ -198,11 +198,8 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                     turmas.clear();
                     for (QueryDocumentSnapshot document : task.getResult()) {
 
-
-
                         String anoTurma = document.getString("ano");
                         String semestreTurma = document.getString("semestre");
-
 
                         Turma u = new Turma();
                         u.setId(document.getId());
@@ -262,7 +259,7 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
             Mensagem mensagem = new Mensagem(idMsg, idProfessor, textMsg, "Prof." + nomeProf, txtTurmaAno, txtTurmaSemestre,
-                    dataFormatada, timeStamp, false, mudancaHorario, hora_atual);
+                    dataFormatada, timeStamp, false, mudancaHorario, hora_atual, nomeCurso);
 
             if (!mensagem.getMensagem().isEmpty()) {
                 FirebaseFirestore.getInstance().collection("cursos").document(curso.getId()).collection("turmas").document(turma.getId())
@@ -280,31 +277,6 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
-
-//    public void buscarNomeProfessor() {
-//
-//        FirebaseFirestore.getInstance().collection("professores")
-//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//
-//                        Professor p = new Professor();
-//                        p.setId(document.getString("id"));
-//                        p.setNomeProfessor(document.getString("nomeProfessor"));
-//                        nomeProf=p.getNomeProfessor();
-//                       }
-//
-//
-//                } else {
-//                    Log.w(TAG, "Error getting documents.", task.getException());
-//                }
-//            }
-//        });
-//
-//    }
 
     private void carregarSpinnerCurso() {
         FirebaseFirestore.getInstance().collection("cursos")

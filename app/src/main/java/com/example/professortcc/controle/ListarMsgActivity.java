@@ -123,18 +123,10 @@ public class ListarMsgActivity extends AppCompatActivity {
                                 long time = document.getLong("timeMassage");
                                 String turmaAno = document.getString("turmaAnoMensagem");
                                 String hora = document.getString("hora_atual");
+                                String curso = document.getString("cursoMsg");
 
-
-
-                                Mensagem u = new Mensagem(id, idRemetente, mensagem, remetente, turmaAno, semestre, data, time, paraTodos, mudanca,hora);
-
-
+                                Mensagem u = new Mensagem(id, idRemetente, mensagem, remetente, turmaAno, semestre, data, time, paraTodos, mudanca,hora, curso);
                                 mensagens.add(u);
-
-
-
-
-
 
                             }
                             ArrayAdapter<Mensagem> adaptador = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_list_item_1, mensagens);
@@ -148,15 +140,12 @@ public class ListarMsgActivity extends AppCompatActivity {
                                 Toast.makeText(ListarMsgActivity.this, "não há mensagens nesta turma", Toast.LENGTH_SHORT).show();
                             }
 
-
                         } else {
 
                         }
                     }
                 });
-
     }
-
     public boolean onOptionsItemSelected(MenuItem item) { //Botão adicional na ToolBar
         switch (item.getItemId()) {
             case android.R.id.home:  //ID do seu botão (gerado automaticamente pelo android, usando como está, deve funcionar
