@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,7 +42,6 @@ import java.util.UUID;
 
 public class ProfActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-
     private EditText textMensagem;
     private List<Curso> cursos;
     private List<Turma> turmas;
@@ -54,9 +54,9 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
     private String txtTurmaAno, txtTurmaSemestre;
     private Button enviarMensagem;
     private String idMsg;
+    private String aliasurlGrade;
     private String nomeCurso;
     private final static String TAG  = "Firelog";
-
 
     @Override
     protected void onStart() {
@@ -75,9 +75,7 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                                     String id = document.getString("id");
                                     String nome = document.getString("nomeProfessor");
 
-
                                     Professor u = new Professor();
-
 
                                     u.setId(id);
                                     u.setNomeProfessor(nome);
@@ -94,8 +92,6 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 });
-
-
     }
 
     @Override
@@ -146,11 +142,46 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onClick(View view) {
 
+        Curso curso = (Curso) spnCursos.getSelectedItem();
+        final Turma turma = (Turma) spnTurmas.getSelectedItem();
 
+        FirebaseFirestore.getInstance().collection("cursos").document(curso.getId())
+                .collection("turmas").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
 
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.getId().equals(turma.getId())) {
 
+                            String id = document.getString("id");
+                            String urlGrade = document.getString("urlGrade");
+
+                            Turma u = new Turma();
+
+                            u.setId(id);
+                            u.setUrlGrade(urlGrade);
+
+                            aliasurlGrade = urlGrade;
+
+                        }
+                    }
+                    if(aliasurlGrade.isEmpty()){
+
+                        Toast.makeText(ProfActivity.this, "Essa turma não possui grade de horários", Toast.LENGTH_LONG).show();
+
+                    }
+                    else{
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(aliasurlGrade));
+                        startActivity(browserIntent);
+                    }
+
+                } else {
+
+                }
+            }
+         });
        }
-
     });
 
     }
@@ -230,10 +261,6 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-
-
-
-
             Mensagem mensagem = new Mensagem(idMsg, idProfessor, textMsg, "Prof." + nomeProf, txtTurmaAno, txtTurmaSemestre,
                     dataFormatada, timeStamp, false, mudancaHorario, hora_atual);
 
@@ -244,14 +271,14 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseFirestore.getInstance().collection("professores").document(idProfessor).collection("mensagens")
                         .document(idMsg).set(mensagem);
 
+                FirebaseFirestore.getInstance().collection("mensagens").document(mensagem.getId()).set(mensagem);
+
                 Toast.makeText(getApplicationContext(), "mensagem enviada com sucesso", Toast.LENGTH_SHORT).show();
             }
             else{
                 Toast.makeText(getApplicationContext(), "mensagem vazia", Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
 
 //    public void buscarNomeProfessor() {
@@ -278,7 +305,6 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 //        });
 //
 //    }
-
 
     private void carregarSpinnerCurso() {
         FirebaseFirestore.getInstance().collection("cursos")
@@ -343,8 +369,6 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
         carregarSpinnerTurma();
     }
-
-
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
