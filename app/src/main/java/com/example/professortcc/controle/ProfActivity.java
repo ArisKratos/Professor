@@ -324,6 +324,7 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
                 FirebaseFirestore.getInstance().collection("mensagens").document(mensagem.getId()).set(mensagem);
 
                 Toast.makeText(getApplicationContext(), "mensagem enviada com sucesso", Toast.LENGTH_SHORT).show();
+
                 prepararNotificacao(mensagem);
             }
             else{
@@ -402,7 +403,8 @@ public class ProfActivity extends AppCompatActivity implements AdapterView.OnIte
 
 private void prepararNotificacao(Mensagem mensagem){
     TOPIC = "/topics/userABC"; //topic has to match what the receiver subscribed to
-    NOTIFICATION_TITLE = mensagem.getRemetenteMsg().toString();
+    NOTIFICATION_TITLE = mensagem.getTurmaAnoMensagem() +"/"+ mensagem.getSemestreMensagem()
+            + "-" +  mensagem.getCursoMsg();
     NOTIFICATION_MESSAGE = mensagem.getMensagem();
 
     listadealunos();
